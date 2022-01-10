@@ -34,6 +34,9 @@ const App = () => {
             .then((position) => {      
               getWeather(position.coords.latitude, position.coords.longitude)
             })
+            .catch((err) => {
+                console.log(err.message);
+            })
           }
           else {
             alert("Geolocation not available , You can still search manually :)")
