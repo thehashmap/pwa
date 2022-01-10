@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { fetchWeather } from './api/FetchWeather';
 import './App.css';
 
@@ -14,6 +14,31 @@ const App = () => {
             setQuery('');
         }
     }
+
+    const getPosition = (options) => {
+        return new Promise(function (resolve, reject) {
+          navigator.geolocation.getCurrentPosition(resolve, reject, options);
+        });
+      }
+      
+    const getWeather = async (lat, lon) => {     
+        const api_call = await fetch(`//api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=f33a484cf794d08d0148764789aaba32&units=metric`);
+        const data = await api_call.json();
+        setWeather(data);
+        setQuery('');
+    }
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+            getPosition()
+            .then((position) => {      
+              getWeather(position.coords.latitude, position.coords.longitude)
+            })
+          }
+          else {
+            alert("Geolocation not available , You can still search manually :)")
+          }
+    }, []);
 
     return (
         <div className='main-container'>
